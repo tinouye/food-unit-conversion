@@ -1,0 +1,20 @@
+{
+  "name": "node-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "expresstest.js",
+  "scripts": {
+    "start": "node dist/expresstest.js",
+    "build": "tsc",
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "convert-units": "^2.3.4",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.31"
+  }
+}
