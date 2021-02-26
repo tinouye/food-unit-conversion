@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node dist/expresstest.js",
-    "build": "tsc",
+    "build": "tsc && tsc static/index.ts",
     "test": "test"
   },
   "author": "",

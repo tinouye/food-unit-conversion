@@ -3,7 +3,7 @@ const path = require('path');
 //const bodyParser = require('body-parser');
 const conversions = require('./conversions');
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 5000;
 app.use('/', express.static('static')); //Send website in /static when / is accessed
 //Initialize bodyParser to parse body, I guess?
 //app.use(bodyParser.json()); // support json encoded bodies, shouldn't need this
@@ -21,6 +21,6 @@ app.post('/convert', (req, res, next) => {
     console.log(output);
     res.send(output);
 }, (req, res) => { res.send("foo"); });
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Example app listening`);
 });
