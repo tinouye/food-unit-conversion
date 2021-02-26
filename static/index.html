@@ -8,11 +8,17 @@
 </style>
 <script src="index.js"></script>
 <body>
-
     <h1>Index</h1>
     <div id=demo>Hi</div>
-    <button type="button" onclick="getStuff()">Test</button>
-    
 
+        <label for="val1">Enter a value: </label>
+        <input type="number" id="val1" name="val1">
+        <label for="unit1">Enter a unit: </label>
+        <input type="text" id="unit1" name="unit1">
+        <label for="unit2">Convert to: </label>
+        <input type="text" id="unit2" name="unit2">
+        <button onclick="sendConversion()">Convert!</button>
+
+    <div id="response"></div>
 </body>
 </html> 

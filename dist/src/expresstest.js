@@ -8,7 +8,7 @@ app.use('/', express.static('static')); //Send website in /static when / is acce
 //Initialize bodyParser to parse body, I guess?
 //app.use(bodyParser.json()); // support json encoded bodies, shouldn't need this
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
-app.post('/convert', (req, res, next) => {
+app.get('/convert', (req, res, next) => {
     console.log(req.url);
     //Load req body into ConversionRequest schema
     const reqbody = {
