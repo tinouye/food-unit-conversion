@@ -14,7 +14,33 @@
         <label for="val1">Enter a value: </label>
         <input type="number" id="val1" name="val1">
         <label for="unit1">Enter a unit: </label>
-        <input type="text" id="unit1" name="unit1">
+        <select id="unit1" name="unit1">
+            <optgroup label="US Standard">
+                <optgroup label="Weight">
+                    <option value="oz">oz</option>
+                    <option value="lb">lb</option>
+                </optgroup>
+                <optgroup label="Volume">
+                    <option value="tsp">tsp</option>
+                    <option value="tbsp">tbsp</option>
+                    <option value="fl-oz">fl-oz</option>
+                    <option value="cup">cup</option>
+                    <option value="pint">pint</option>
+                    <option value="quart">quart</option>
+                    <option value="gal">gal</option>
+                </optgroup>
+            </optgroup>
+            <optgroup label="Metric">
+                <optgroup label="Weight">
+                    <option value="g">g</option>
+                    <option value="kg">kg</option>
+                </optgroup>
+                <optgroup label="Volume">
+                    <option value="cc">cc</option>
+                    <option value="ml">ml</option>
+                    <option value="l">l</option>
+                </optgroup>
+            </optgroup>
         <label for="unit2">Convert to: </label>
         <input type="text" id="unit2" name="unit2">
         <button onclick="sendConversion()">Convert!</button>

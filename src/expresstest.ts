@@ -6,10 +6,15 @@ const conversions = require('./conversions')
 const app = express()
 const PORT = process.env.PORT || 5000
 
-app.use('/', express.static('static')) //Send website in /static when / is accessed
+let client = "client/build"
+console.log(process.argv)
+if (process.argv.length == 3 && process.argv[2] == "test") {
+client = "static"
+}
+
+app.use('/', express.static(client)) //Send website in directory when / is accessed
 
 //Initialize bodyParser to parse body, I guess?
-//app.use(bodyParser.json()); // support json encoded bodies, shouldn't need this
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
 
 app.post('/convert', (req, res, next) => {
