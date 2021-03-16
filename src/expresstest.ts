@@ -10,8 +10,10 @@ const PORT = process.env.PORT || 5000
 let client = "client/build"
 console.log(process.argv)
 if (process.argv.length == 3 && process.argv[2] == "test") {
-client = "static"
+  client = "static"
 }
+
+console.log("Delivering page from: " + client)
 
 app.use('/', express.static(client)) //Send website in directory when / is accessed
 

@@ -1,19 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
-require('axios')
-import { isPropertySignature, isTemplateSpan, reduceEachTrailingCommentRange } from 'typescript';
+import { isPropertySignature, isTemplateSpan, isThisTypeNode, reduceEachTrailingCommentRange } from 'typescript';
 import axios from 'axios';
-let densityTable = require('./densities.json');
+import React from 'react';
+const densityTable = require('./densities.json');
 
 function App() {
   return (
     <div className="App">
-      <label for="val1">Enter a value: </label>
-      <input type="number" id="val1" name="val1"></input>
-      <UnitField id="unit1"></UnitField>
-      <UnitField id="unit2"></UnitField>
-
-      <button onclick="sendConversion()">Convert!</button>
+      <ConversionForm />
 
     </div>
   )
@@ -75,7 +70,7 @@ function UnitField(props) {
   }
 
   return (
-    <select id={props.id} name={props.id}>
+    <select id={props.id} name={props.id} onChange={props.onChange}>
       <UnitGroup units={weight} unitTypeName="Weight"/>
       <UnitGroup units={volume} unitTypeName="Volume"/>
     </select>
@@ -88,7 +83,8 @@ function Density(props) {
   )
 }
 
-function DensitiesOptions(props) {
+function DensitiesField(props) {
+  //Populate array with Density HTML components
   let ingredients_alpha = Object.keys(densityTable).sort()
   let densities_html = []
 
@@ -97,10 +93,23 @@ function DensitiesOptions(props) {
   })
 
   return (
-    <select id="density" name="density">
+    <select id="density" name="density" onChange={props.onChange}>
       {densities_html}
     </select>
   )
+}
+
+
+class Result extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: ""
+    }
+  }
+  render() {
+    return <div>{this.state.value}</div>
+  }
 }
 
 
@@ -108,17 +117,18 @@ class ConversionForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      va1: "",
+      val1: "",
       unit1: "",
       unit2: "",
-      density: ""
+      density: "",
+      output: ""
     }
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleInputChange(event) {
     const target = event.target
     const value = target.value
     const name = target.name
@@ -126,32 +136,55 @@ class ConversionForm extends React.Component {
     this.setState({
       [name]: value
     })
+    console.log(this.state)
   }
 
+
   handleSubmit(event) {
-    axios({
-      method: 'post',
-      url: '/convert',
-      data: this.state
-    })
+    const searchParams = new URLSearchParams()
+    const result = <Result />
+
+    //Load form values held in "state" into POST-ready format
+    for (const [key, value] of Object.entries(this.state)) {
+      searchParams.set(key, value)
+    }
+
+   console.log("Sending")
+   console.log(this.state)
+   axios.post("/convert", searchParams)
     .then(response => {
-      console.log(response)
+      console.log(response);
+      this.setState({output:response.data})
     })
     event.preventDefault();
   }
-  
+
   render () {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Convert:
-          <input type="number" id="val1" name="val1"></input>
-          <UnitField id="unit1"/>
-          <UnitField id="unit2"/>
-          <Density />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Convert:
+            <input
+              type="text"
+              id="val1"
+              name="val1"
+              value={this.state.val1}
+              onChange={this.handleInputChange} />
+            <UnitField
+              id="unit1"
+              value={this.state.unit1}
+              onChange={this.handleInputChange} />
+            <UnitField
+              id="unit2"
+              value={this.state.unit2}
+              onChange={this.handleInputChange} />
+            <DensitiesField onChange={this.handleInputChange} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+        <div>{this.state.output}</div>
+      </div>
     )
   }
 

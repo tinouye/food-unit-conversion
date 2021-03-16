@@ -10,6 +10,7 @@ console.log(process.argv);
 if (process.argv.length == 3 && process.argv[2] == "test") {
     client = "static";
 }
+console.log("Delivering page from: " + client);
 app.use('/', express.static(client)); //Send website in directory when / is accessed
 //Initialize bodyParser to parse body, I guess?
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
