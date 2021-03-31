@@ -1,17 +1,22 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeConversion = void 0;
-const convert = require('convert-units');
+const convert_units_1 = __importDefault(require("convert-units"));
 const densityTable = require('./densities.json');
 const weight = { "oz": "Ounce", "lb": "Pound", "g": "Gram", "kg": "Kilogram" };
 const volume = {
     "tsp": "Teaspoon",
-    "tbsp": "Tablespoon",
+    "Tbp": "Tablespoon",
     "fl-oz": "Fluid Ounce",
     "cup": "Cup",
     "pint": "Pint",
     "quart": "Quart",
-    "gal": "Gallon"
+    "gal": "Gallon",
+    "ml": "Mililiter",
+    "l": "Liter"
 };
 const findUnitType = function (unit) {
     if (unit in weight) {
@@ -25,19 +30,22 @@ const findUnitType = function (unit) {
     }
 };
 const makeConversion = function (reqbody) {
-    let output;
     console.log(reqbody);
-    const unit1Type = findUnitType(reqbody.unit1);
-    const unit2Type = findUnitType(reqbody.unit2);
+    let output;
+    reqbody.density = densityTable[reqbody.density];
+    console.log(reqbody);
+    //Determine unit type
+    const unit1Type = convert_units_1.default().describe(reqbody.unit1).measure;
+    const unit2Type = convert_units_1.default().describe(reqbody.unit2).measure;
     //Convert directly if 2 units are same type
     if (unit1Type == unit2Type) {
-        output = convert(reqbody.val1).from(reqbody.unit1).to(reqbody.unit2);
+        output = convert_units_1.default(reqbody.val1).from(reqbody.unit1).to(reqbody.unit2);
     }
     else {
         let bridgeStart;
         let bridgeEnd;
         let conversionFactor;
-        if (unit1Type == "weight") {
+        if (unit1Type == "mass") {
             bridgeStart = "g";
             bridgeEnd = "ml";
             conversionFactor = 1 / reqbody.density;
@@ -47,9 +55,11 @@ const makeConversion = function (reqbody) {
             bridgeEnd = "g";
             conversionFactor = reqbody.density;
         }
-        const val1_metric = convert(reqbody.val1).from(reqbody.unit1).to(bridgeStart);
+        console.log(reqbody.val1 + reqbody.unit1 + bridgeStart);
+        const val1_metric = convert_units_1.default(reqbody.val1).from(reqbody.unit1).to(bridgeStart);
         const output_metric = val1_metric * (conversionFactor);
-        output = convert(output_metric).from(bridgeEnd).to(reqbody.unit2);
+        console.log("Flag");
+        output = convert_units_1.default(output_metric).from(bridgeEnd).to(reqbody.unit2);
     }
     return output.toString();
 };

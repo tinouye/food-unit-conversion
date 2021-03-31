@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 //const bodyParser = require('body-parser');
 const conversions = require('./conversions');
-//const convertUnits = require('./units')
+const unitsRouter = require('./units');
 const app = express();
 const PORT = process.env.PORT || 5000;
 let client = "client/build";
@@ -14,8 +14,8 @@ console.log("Delivering page from: " + client);
 app.use('/', express.static(client)); //Send website in directory when / is accessed
 //Initialize bodyParser to parse body, I guess?
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
+app.use('/units', unitsRouter);
 app.post('/convert', (req, res, next) => {
-    console.log(req.url);
     //Load req body into ConversionRequest schema
     const reqbody = {
         val1: req.body.val1,
@@ -25,7 +25,7 @@ app.post('/convert', (req, res, next) => {
     };
     let output = conversions.makeConversion(reqbody);
     console.log(output);
-    res.send(output);
+    res.send(Number.parseFloat(output).toPrecision(6));
 }, (req, res) => { res.send("foo"); });
 app.listen(PORT, () => {
     console.log(`Example app listening`);

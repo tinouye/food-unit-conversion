@@ -1,9 +1,11 @@
+import express from "express"
 const router = express.Router()
-const csv = require('csv-parser')
-const fs = require('fs')
+const unitsObject = require("./units.json")
 
 const units = {}
 
 router.get('/', (req, res) => {
-    console.log("foo")
+    res.json(unitsObject)
 })
+
+module.exports = router

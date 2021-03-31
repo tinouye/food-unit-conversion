@@ -1,0 +1,58 @@
+{
+"weight": [
+{
+"unit": "oz",
+"name": "Ounces"
+},
+{
+"unit": "lb",
+"name": "Pounds"
+},
+{
+"unit": "g",
+"name": "Grams"
+},
+{
+"unit": "kg",
+"name": "Kilograms"
+}
+],
+"volume": [
+{
+"unit": "tsp",
+"name": "Teaspoons"
+},
+{
+"unit": "tbsp",
+"name": "Tablepsoons"
+},
+{
+"unit": "fl-oz",
+"name": "Fluid Ounces"
+},
+{
+"unit": "cup",
+"name": "Cups"
+},
+{
+"unit": "pint",
+"name": "Pints"
+},
+{
+"unit": "quart",
+"name": "Quarts"
+},
+{
+"unit": "gal",
+"name": "Gallons"
+},
+{
+"unit": "ml",
+"name": "Mililiters"
+},
+{
+"unit": "l",
+"name": "Liters"
+}
+]
+}

@@ -3,7 +3,15 @@ import './App.css';
 import { isPropertySignature, isTemplateSpan, isThisTypeNode, reduceEachTrailingCommentRange } from 'typescript';
 import axios from 'axios';
 import React from 'react';
-const densityTable = require('./densities.json');
+
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
+import UnitField from './units.js';
+//const densityTable = require('./densities.json');
+import ingredients from './ingredients.json';
 
 function App() {
   return (
@@ -35,70 +43,50 @@ function App() {
   */
 }
 
-function Unit(props) {
-  return (
-    <option value={props.val}>{props.name}</option>
-  )
-}
 
-function UnitGroup(props) {
-  let unitOptions = []
-
-  //Populate unitOptions with Units
-  for (const [key,value] of Object.entries(props.units)) {
-    unitOptions.push(<Unit val={key} name={value}/>)
-    //return <SelectItem val={key} name={value}></SelectItem>
+function InputField(props) {
+  const onInputChange = (event) => {
+    const name = event.target.name
+    const value = event.target.value
+    props.onChange(name, value)
   }
 
   return (
-    <optgroup label={props.unitTypeName}>
-      {unitOptions}
-    </optgroup>
+    <TextField
+      id={props.id}
+      name={props.name}
+      label="Enter a value"
+      type="number"
+      onChange={onInputChange}
+      variant="outlined" />
   )
 }
 
-function UnitField(props) {
-  const weight = {"oz":"Ounce", "lb":"Pound", "g":"Gram", "kg":"Kilogram"}
-  const volume = {
-    "tsp":"Teaspoon",
-    "tbsp":"Tablespoon",
-    "fl-oz":"Fluid Ounce",
-    "cup":"Cup",
-    "pint":"Pint",
-    "quart":"Quart",
-    "gal":"Gallon"
+
+class DensitiesField extends React.Component {
+  constructor(props) {
+    super(props)
+    this.onChange = this.onChange.bind(this)
   }
 
-  return (
-    <select id={props.id} name={props.id} onChange={props.onChange}>
-      <UnitGroup units={weight} unitTypeName="Weight"/>
-      <UnitGroup units={volume} unitTypeName="Volume"/>
-    </select>
-  )
+  onChange(event, newValue) {
+    this.props.onChange("density", newValue)
+  }
+
+  render() {
+    return (
+      <Autocomplete
+            id="density"
+            name="density"
+            onChange={this.onChange}
+            options={ingredients}
+            //getOptionLabel={(option) => option.title}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Ingredient" variant="outlined" />}
+          />
+    )
+  }
 }
-
-function Density(props) {
-  return (
-    <option value={props.gml}>{props.ingredient}</option>
-  )
-}
-
-function DensitiesField(props) {
-  //Populate array with Density HTML components
-  let ingredients_alpha = Object.keys(densityTable).sort()
-  let densities_html = []
-
-  ingredients_alpha.forEach(item => {
-    densities_html.push(<Density gml={densityTable[item]} ingredient={item}/>)
-  })
-
-  return (
-    <select id="density" name="density" onChange={props.onChange}>
-      {densities_html}
-    </select>
-  )
-}
-
 
 class Result extends React.Component {
   constructor(props) {
@@ -128,35 +116,38 @@ class ConversionForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleInputChange(event) {
-    const target = event.target
-    const value = target.value
-    const name = target.name
-
+  handleInputChange(name, value) {
     this.setState({
       [name]: value
-    })
-    console.log(this.state)
+    }, this.handleSubmit)
   }
 
-
-  handleSubmit(event) {
-    const searchParams = new URLSearchParams()
-    const result = <Result />
-
-    //Load form values held in "state" into POST-ready format
-    for (const [key, value] of Object.entries(this.state)) {
-      searchParams.set(key, value)
+  handleSubmit() {
+    let readyToSend = true
+    for (const val of ["val1", "unit1", "unit2", "density"]) {
+      if (this.state[val] == "") {
+        readyToSend = false
+        break
+      }
     }
+    if (readyToSend) {
+      const searchParams = new URLSearchParams()
+      const result = <Result />
 
-   console.log("Sending")
-   console.log(this.state)
-   axios.post("/convert", searchParams)
-    .then(response => {
-      console.log(response);
-      this.setState({output:response.data})
-    })
-    event.preventDefault();
+      //Load form values held in "state" into POST-ready format
+      for (const [key, value] of Object.entries(this.state)) {
+        searchParams.set(key, value)
+      }
+
+    console.log("Sending")
+    console.log(this.state)
+    axios.post("/convert", searchParams)
+      .then(response => {
+        console.log(response);
+        this.setState({output:response.data})
+      })
+      //event.preventDefault();
+    }
   }
 
   render () {
@@ -165,11 +156,10 @@ class ConversionForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <label>
             Convert:
-            <input
-              type="text"
+            <InputField
               id="val1"
               name="val1"
-              value={this.state.val1}
+              //value={this.state.val1}
               onChange={this.handleInputChange} />
             <UnitField
               id="unit1"
@@ -181,9 +171,8 @@ class ConversionForm extends React.Component {
               onChange={this.handleInputChange} />
             <DensitiesField onChange={this.handleInputChange} />
           </label>
-          <input type="submit" value="Submit" />
         </form>
-        <div>{this.state.output}</div>
+        <h1>{this.state.output}</h1>
       </div>
     )
   }
