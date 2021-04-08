@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node dist/expresstest.js",
-    "build": "tsc && npm --prefix client run build",
+    "build": "tsc",
     "fbuild": "tsc && tsc static/index.ts && npm --prefix client run build",
     "test": "node dist/expresstest.js test"
   },
