@@ -1,6 +1,7 @@
 import React from 'react';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import axios from 'axios';
+import { flattenDiagnosticMessageText, isWhiteSpaceLike } from 'typescript';
 
 function Unit(props) {
     return (
@@ -15,14 +16,6 @@ function UnitGroup(props) {
         unitOptions.push(<Unit val={unit.unit} name={unit.name}/>)
     }
 
-    /*
-    for (const [key,value] of Object.entries(props.units)) {
-        unitOptions.push(<Unit val={key} name={value}/>)
-        //return <SelectItem val={key} name={value}></SelectItem>
-    }
-    */
-
-
     return (
         <optgroup label={props.unitTypeName}>
         {unitOptions}
@@ -34,24 +27,14 @@ class UnitField extends React.Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this)
-        //this.componentWillMount = this.componentWillMount(this)
+        this.updateParentState = this.updateParentState.bind(this)
         this.state= {
             weight: [],
-            volume: []
+            volume: [],
         };
     }
-    /*
-    const weight = {"oz":"Ounce", "lb":"Pound", "g":"Gram", "kg":"Kilogram"}
-    const volume = {
-        "tsp":"Teaspoon",
-        "tbsp":"Tablespoon",
-        "fl-oz":"Fluid Ounce",
-        "cup":"Cup",
-        "pint":"Pint",
-        "quart":"Quart",
-        "gal":"Gallon"
-    }
-    */
+
+    //Populate state with unit options from API
     componentWillMount() {
         axios.get('/units')
             .then(response => {
@@ -60,18 +43,49 @@ class UnitField extends React.Component {
                     weight:response.data.weight,
                     volume:response.data.volume
                 })
+                //Note: default value is chosen blind to unit options, probably bad design
+                this.updateParentState(this.props.id, this.props.defaultValue)
             })
     }
 
     onChange(event) {
-        const name = event.target.name
-        const value = event.target.value
-        this.props.onChange(name, value)
+        console.log(event.target)
+        const name = event.target.name;
+        const value = event.target.value;
+        
+        this.updateParentState(name, value)
+    }
+
+    updateParentState(name, value) {
+        //Determine unit type of "value"
+        //No type if unit is found in neither group
+        //This could probably be a class function but whatever
+        let unitType = "";
+        for (const unit of this.state.weight) {
+            if (unit.unit == value) {
+                unitType = "weight";
+                break;
+            }
+        }
+        if (unitType == "") {
+            for (const unit of this.state.volume) {
+                if (unit.unit == value) {
+                    unitType = "volume";
+                    break;
+                }
+            }
+        }  
+
+        this.props.onChange(name, value, unitType)
     }
 
     render() {
         return (
-            <NativeSelect id={this.props.id} name={this.props.id} onChange={this.onChange}>
+            <NativeSelect
+                id={this.props.id}
+                name={this.props.id}
+                value={this.props.value}
+                onChange={this.onChange}>
                 <option aria-label="None" value="" />
                 <UnitGroup units={this.state.weight} unitTypeName="Weight"/>
                 <UnitGroup units={this.state.volume} unitTypeName="Volume"/>

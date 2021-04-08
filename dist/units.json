@@ -23,7 +23,7 @@
 "name": "Teaspoons"
 },
 {
-"unit": "tbsp",
+"unit": "Tbs",
 "name": "Tablepsoons"
 },
 {
@@ -35,11 +35,11 @@
 "name": "Cups"
 },
 {
-"unit": "pint",
+"unit": "pnt",
 "name": "Pints"
 },
 {
-"unit": "quart",
+"unit": "qt",
 "name": "Quarts"
 },
 {

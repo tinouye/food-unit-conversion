@@ -1,10 +1,20 @@
 .App {
-  text-align: center;
+  margin: 50px;
+  padding: 20px;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+#mainForm {
+  display:flex;
+  justify-content:flex-start;
+}
+
+#mainForm > * {
+  margin:25px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

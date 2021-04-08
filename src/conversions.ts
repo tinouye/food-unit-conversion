@@ -58,8 +58,10 @@ const makeConversion = function(reqbody) {
         const output_metric = val1_metric*(conversionFactor)
         output = convert(output_metric).from(bridgeEnd).to(reqbody.unit2)
     }
-
-    return output.toString()
+    let outputStr: string
+    
+    outputStr = Number.parseFloat(output.toString()).toPrecision(6);
+    return outputStr;
 }
 
 export {makeConversion}

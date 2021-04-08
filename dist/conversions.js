@@ -30,7 +30,6 @@ const findUnitType = function (unit) {
     }
 };
 const makeConversion = function (reqbody) {
-    console.log(reqbody);
     let output;
     reqbody.density = densityTable[reqbody.density];
     console.log(reqbody);
@@ -55,12 +54,12 @@ const makeConversion = function (reqbody) {
             bridgeEnd = "g";
             conversionFactor = reqbody.density;
         }
-        console.log(reqbody.val1 + reqbody.unit1 + bridgeStart);
         const val1_metric = convert_units_1.default(reqbody.val1).from(reqbody.unit1).to(bridgeStart);
         const output_metric = val1_metric * (conversionFactor);
-        console.log("Flag");
         output = convert_units_1.default(output_metric).from(bridgeEnd).to(reqbody.unit2);
     }
-    return output.toString();
+    let outputStr;
+    outputStr = Number.parseFloat(output.toString()).toPrecision(6);
+    return outputStr;
 };
 exports.makeConversion = makeConversion;

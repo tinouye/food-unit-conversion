@@ -3,6 +3,7 @@ const path = require('path')
 //const bodyParser = require('body-parser');
 const conversions = require('./conversions')
 const unitsRouter = require('./units')
+const ingredientsRouter = require('./ingredients')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -21,6 +22,7 @@ app.use('/', express.static(client)) //Send website in directory when / is acces
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
 
 app.use('/units', unitsRouter)
+app.use('/ingredients', ingredientsRouter)
 
 app.post('/convert', (req, res, next) => {
   // Define conversion object
@@ -36,11 +38,11 @@ app.post('/convert', (req, res, next) => {
     val1: req.body.val1,
     unit1: req.body.unit1,
     unit2: req.body.unit2,
-    density: req.body.density,
+    density: req.body.ingredient,
   }
   let output = conversions.makeConversion(reqbody)
-  console.log(output)
-  res.send(Number.parseFloat(output).toPrecision(6))
+  console.log(output);
+  res.send(output);
 },
 (req, res) => {res.send("foo")})
 
