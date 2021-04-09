@@ -5,13 +5,14 @@ const conversions = require('./conversions');
 const unitsRouter = require('./units');
 const ingredientsRouter = require('./ingredients');
 const app = express();
-const PORT = process.env.PORT || 5000;
-let client = "client/build";
+const PORT = process.env.PORT || 80;
+let client = process.cwd();
+client = client + "/client/build";
 console.log(process.argv);
 if (process.argv.length == 3 && process.argv[2] == "test") {
-    client = "static";
+    client = client + "/static";
 }
-console.log("Delivering page from: " + client);
+console.log("Delivering page from: " + client + " on port " + PORT);
 app.use('/', express.static(client)); //Send website in directory when / is accessed
 //Initialize bodyParser to parse body, I guess?
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
