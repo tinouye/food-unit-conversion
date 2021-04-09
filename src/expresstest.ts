@@ -8,12 +8,7 @@ const ingredientsRouter = require('./ingredients')
 const app = express()
 const PORT = process.env.PORT || 80
 
-let client = process.cwd()
-client = client + "/client/build"
-console.log(process.argv)
-if (process.argv.length == 3 && process.argv[2] == "test") {
-  client = client + "/static"
-}
+let client = path.join(__dirname, "..", "client", "build")
 
 console.log("Delivering page from: " + client + " on port " + PORT)
 
