@@ -9,16 +9,28 @@ const app = express()
 const PORT = process.env.PORT || 80
 
 let client = path.join(__dirname, "..", "client", "build")
+//let client = path.join(__dirname, "..", "static")
 
 console.log("Delivering page from: " + client + " on port " + PORT)
 
-app.use('/', express.static(client)) //Send website in directory when / is accessed
+//Prevent caching, delete this in production
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
+
+app.use(express.static(client));
+
+//Send website in directory when / is accessed
+app.get('/', function (req, res) {
+  res.sendFile(path.join(client, 'index.html'));
+});
 
 //Initialize bodyParser to parse body, I guess?
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
 
-app.use('/units', unitsRouter)
-app.use('/ingredients', ingredientsRouter)
+app.use('/units', unitsRouter);
+app.use('/ingredients', ingredientsRouter);
 
 app.post('/convert', (req, res, next) => {
   // Define conversion object
@@ -36,7 +48,7 @@ app.post('/convert', (req, res, next) => {
     unit2: req.body.unit2,
     density: req.body.ingredient,
   }
-  let output = conversions.makeConversion(reqbody)
+  let output = conversions.makeConversion(reqbody);
   console.log(output);
   res.send(output);
 },
