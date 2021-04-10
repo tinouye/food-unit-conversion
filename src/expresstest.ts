@@ -25,7 +25,7 @@ app.use(express.static(client));
 app.get('/', function (req, res) {
   console.log("request at / detected, serving static content from " + path.join(client, 'index.html'));
   //res.sendFile(path.join(client, 'index.html'));
-  res.sendFile(path.join("..","static","index.html"))
+  res.sendFile(path.join(__dirname, "..","static","index.html"))
 });
 
 //Initialize bodyParser to parse body, I guess?
