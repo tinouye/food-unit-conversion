@@ -23,9 +23,7 @@ app.use(express.static(client));
 
 //Send website in directory when / is accessed
 app.get('/', function (req, res) {
-  console.log("request at / detected, serving static content from " + path.join(client, 'index.html'));
-  //res.sendFile(path.join(client, 'index.html'));
-  res.sendFile(path.join(__dirname, "..","static","index.html"))
+  res.sendFile(path.join(client, 'index.html'));
 });
 
 //Initialize bodyParser to parse body, I guess?
