@@ -7,7 +7,7 @@
     "node": "14.x"
   },
   "scripts": {
-    "postinstall": "npm install --prefix client
+    "postinstall": "npm install --prefix client,
     "start": "node dist/expresstest.js",
     "build": "tsc && npm --prefix client run build",
     "fbuild": "tsc && tsc static/index.ts && npm --prefix client run build",
